@@ -2,101 +2,94 @@
 #include <vector>
 #include "Graph.h"
 using namespace std;
+
 int main() {
+	Graph<std::string> firstGraph;
+	std::string a, b;
+	int input;
 
-	Graph firstGraph;
-	int a, b, input;
+	do {
+		std::cout << "Ingrese el número para realizar las siguientes operaciones:\n";
+		std::cout << "1. Agregar un estadio al grafo.\n";
+		std::cout << "2. Agregar un borde no dirigido.\n";
+		std::cout << "3. Verificar si el estadio existe.\n";
+		std::cout << "4. Verificar si el borde existe.\n";
+		std::cout << "5. Eliminar estadio.\n";
+		std::cout << "6. Eliminar borde no dirigido.\n";
+		std::cout << "7. Imprimir la lista de estadios.\n";
+		std::cout << "8. Imprimir la lista de bordes.\n";
+		std::cout << "9. Encontrar amigos y amigos de amigos de un estadio (BFS).\n";
+		std::cout << "10. Mostrar los vértices adyacentes a un estadio.\n";
+		std::cout << "11. Verificar si un borde existe (detallado).\n";
+		std::cout << "0. Salir.\n>> ";
 
-	do
-	{
-		std::cout << "Enter the number to peform the following operations:" << std::endl;
-		std::cout << "1.Add node to the graph.\n2.Add undirected edge\n3.Check if node exists.\n4.Check if edge exists.\n5.Delete node\n6.Delete undirected edge\n7.Print the node list.\n8.Print the edge list.\n9.Find the friends and friends of friends of a node. (Breadth First Search)\n"
-			"Press 0 to exit\n" << std::flush;
 		std::cin >> input;
-		switch (input)
-		{
-		case 1:
-		{
 
-			std::cout << "Enter the node you want to add" << std::endl;
+		switch (input) {
+		case 1:
+			std::cout << "Ingrese el estadio que desea agregar: ";
 			std::cin >> a;
 			firstGraph.addNode(a);
 			break;
-		}
 		case 2:
-		{
-			std::cout << "Enter the nodes which you want to connect( as friends)" << std::endl;
-			std::cin >> a;
-			std::cin >> b;
+			std::cout << "Ingrese los estados que desea conectar (como amigos): ";
+			std::cin >> a >> b;
 			firstGraph.addUnEdge(a, b);
 			break;
-		}
 		case 3:
-		{
-			std::cout << "Enter the node to check" << std::endl;
+			std::cout << "Ingrese el nodo a verificar: ";
 			std::cin >> a;
 			if (firstGraph.checkNode(a))
-			{
-				std::cout << "The node " << a << "exists" << std::endl;
-			}
+				std::cout << "El nodo " << a << " existe.\n";
 			else
-			{
-				std::cout << "The node doesnot exist" << std::endl;
-			}
+				std::cout << "El nodo no existe.\n";
 			break;
-
-		}
 		case 4:
-		{
-			std::cout << "Enter the nodes to check edge" << std::endl;
+			std::cout << "Ingrese los nodos para verificar el borde: ";
 			std::cin >> a >> b;
 			if (firstGraph.checkEdge(a, b))
-			{
-				std::cout << "The edge (" << a << "," << b << ") exists" << std::endl;
-			}
+				std::cout << "El borde (" << a << "," << b << ") existe.\n";
 			else
-				std::cout << "The edge doesnot exist" << std::endl;
+				std::cout << "El borde no existe.\n";
 			break;
-		}
 		case 5:
-		{
-			std::cout << "Enter the node to delete" << std::endl;
+			std::cout << "Ingrese el nodo a eliminar: ";
 			std::cin >> a;
 			firstGraph.deleteNode(a);
 			break;
-		}
 		case 6:
-		{
-			std::cout << "Enter the nodes of edge you want to remove" << std::endl;
+			std::cout << "Ingrese los nodos del borde que desea eliminar: ";
 			std::cin >> a >> b;
 			firstGraph.deleteUnEdge(a, b);
 			break;
-		}
 		case 7:
-		{
 			firstGraph.printNodeList();
 			break;
-
-		}
 		case 8:
-		{
 			firstGraph.printEdgeList();
 			break;
-
-		}
 		case 9:
-		{
-			std::cout << "Enter the node whose friends you want to find" << std::endl;
+			std::cout << "Ingrese el nodo cuyos amigos desea encontrar: ";
 			std::cin >> a;
 			firstGraph.breadthfirstTraversal(a);
 			break;
-		}
-
+		case 10:
+			std::cout << "Ingrese el nodo para mostrar los vértices adyacentes: ";
+			std::cin >> a;
+			firstGraph.printAdjacent(a);
+			break;
+		case 11:
+			std::cout << "Ingrese los nodos para verificar el borde (detallado): ";
+			std::cin >> a >> b;
+			firstGraph.edgeExists(a, b);
+			break;
 		case 0:
 			break;
 		default:
-			std::cout << "Please enter the valid number" << std::endl;
+			std::cout << "Por favor ingrese un número válido.\n";
 		}
 	} while (input != 0);
+
+
 	return 0;
 }
