@@ -7,20 +7,34 @@ int main() {
 	Graph<std::string> firstGraph;
 	std::string a, b;
 	int input;
+	vector<std::string> distance;
+
+	// Adding some initial nodes and edges
+	firstGraph.addNode("Estadio1");
+	firstGraph.addNode("Estadio2");
+	firstGraph.addNode("Estadio3");
+	firstGraph.addNode("Estadio4");
+	// estadio1 -> estadio2 -> estadio3
+	// add vertices
+	firstGraph.addUnEdge("Estadio1", "Estadio2");
+	firstGraph.addUnEdge("Estadio2", "Estadio3");
+	firstGraph.addUnEdge("Estadio3", "Estadio1");
+	firstGraph.addUnEdge("Estadio3", "Estadio4");
 
 	do {
 		std::cout << "Ingrese el número para realizar las siguientes operaciones:\n";
 		std::cout << "1. Agregar un estadio al grafo.\n";
-		std::cout << "2. Agregar un borde no dirigido.\n";
+		std::cout << "2. Agregar un vertice no dirigido.\n";
 		std::cout << "3. Verificar si el estadio existe.\n";
-		std::cout << "4. Verificar si el borde existe.\n";
+		std::cout << "4. Verificar si el vertice existe.\n";
 		std::cout << "5. Eliminar estadio.\n";
-		std::cout << "6. Eliminar borde no dirigido.\n";
+		std::cout << "6. Eliminar vertice no dirigido.\n";
 		std::cout << "7. Imprimir la lista de estadios.\n";
-		std::cout << "8. Imprimir la lista de bordes.\n";
+		std::cout << "8. Imprimir la lista de vertices.\n";
 		std::cout << "9. Encontrar amigos y amigos de amigos de un estadio (BFS).\n";
 		std::cout << "10. Mostrar los vértices adyacentes a un estadio.\n";
-		std::cout << "11. Verificar si un borde existe (detallado).\n";
+		std::cout << "11. Verificar si un vertice existe (detallado).\n";
+		std::cout << "12. Verificar la distancia entre dos estadios.\n";
 		std::cout << "0. Salir.\n>> ";
 
 		std::cin >> input;
@@ -82,6 +96,12 @@ int main() {
 			std::cout << "Ingrese los nodos para verificar el borde (detallado): ";
 			std::cin >> a >> b;
 			firstGraph.edgeExists(a, b);
+			break;
+		case 12:
+			std::cout << "Ingrese los nodos para verificar la distancia: ";
+			std::cin >> a >> b;
+			distance = firstGraph.shortestPath(a, b);
+			std::cout << "El borde entre " << a << " y " << b << " tiene una distancia de: " << distance.size() << std::endl;
 			break;
 		case 0:
 			break;

@@ -1,8 +1,11 @@
-#ifndef GRAPH_H
+﻿#ifndef GRAPH_H
 #define GRAPH_H
 
 #include <vector>
+#include <unordered_map>
 #include <string>
+#include <queue>
+#include <algorithm>
 
 template <typename T>
 class Graph {
@@ -30,16 +33,16 @@ public:
 		if (a != 1 && check1 == 1 && check2 == 1) {
 			edge1Array.push_back(node1);
 			edge2Array.push_back(node2);
-			std::cout << "Adding edge: (" << node1 << "," << node2 << ")\n";
+			std::cout << "Añadiendo vertice: (" << node1 << "," << node2 << ")\n";
 		}
 		else if (a == 1) {
-			std::cout << "The edge already exists.\n";
+			std::cout << "El vertice ya existe.\n";
 		}
 		else if (check1 != 1) {
-			std::cout << "The node " << node1 << " doesn't exist.\n";
+			std::cout << "El nodo " << node1 << " no existe.\n";
 		}
 		else {
-			std::cout << "The node " << node2 << " doesn't exist.\n";
+			std::cout << "El nodo " << node2 << " no existe.\n";
 		}
 	}
 
@@ -60,7 +63,7 @@ public:
 	int checkEdge(T node1, T node2) {
 		for (int i = 0; i < edge1Array.size(); i++) {
 			if (edge1Array[i] == node1 && edge2Array[i] == node2) {
-				std::cout << "The required edge (" << node1 << "," << node2 << ") exists." << std::endl;
+				std::cout << "El vertice requerido (" << node1 << "," << node2 << ") existe." << std::endl;
 				return 1;
 			}
 		}
@@ -74,7 +77,7 @@ public:
 			for (auto i = nodeArray.begin(); i < nodeArray.end(); i++) {
 				if (*i == node) {
 					nodeArray.erase(nodeArray.begin() + count);
-					std::cout << "Node deleted successfully\n";
+					std::cout << "Nodo eliminado exitosamente\n";
 				}
 				deleteUnEdge(node, *(nodeArray.begin() + count));
 				if (count < nodeArray.size() - 1) {
@@ -93,7 +96,7 @@ public:
 			int count = 0;
 			for (auto i = edge1Array.begin(); i < edge1Array.end(); i++) {
 				if (*(edge1Array.begin() + count) == node1 && *(edge2Array.begin() + count) == node2) {
-					std::cout << "Edge (" << *(edge1Array.begin() + count) << "," << *(edge2Array.begin() + count) << ") deleted successfully.\n";
+					std::cout << "Vertice (" << *(edge1Array.begin() + count) << "," << *(edge2Array.begin() + count) << ") eliminado exitosamente.\n";
 					edge1Array.erase(edge1Array.begin() + count);
 					edge2Array.erase(edge2Array.begin() + count);
 				}
@@ -111,12 +114,12 @@ public:
 
 	void printNodeList() {
 		for (auto i = nodeArray.begin(); i < nodeArray.end(); i++) {
-			std::cout << "Node: " << *i << std::endl;
+			std::cout << "Nodo: " << *i << std::endl;
 		}
 	}
 
 	void printEdgeList() {
-		std::cout << "Edge List:\n";
+		std::cout << "Lista de vertices:\n";
 		for (int i = 0; i < edge1Array.size(); i++) {
 			std::cout << "(" << edge1Array[i] << "," << edge2Array[i] << ")" << std::endl;
 		}
@@ -127,7 +130,7 @@ public:
 		std::vector<T> friendArray;
 		if (x == 1) {
 			int count = 0;
-			std::cout << "Friends of " << node << ":\n";
+			std::cout << "Amigos de " << node << ":\n";
 			for (auto i = edge1Array.begin(); i < edge1Array.end(); i++) {
 				if (*(edge1Array.begin() + count) == node) {
 					friendArray.push_back(*(edge2Array.begin() + count));
@@ -153,7 +156,7 @@ public:
 
 	void printAdjacent(T node) {
 		bool found = false;
-		std::cout << "Adjacent vertices to " << node << ": ";
+		std::cout << "Vertices adjacentes de " << node << ": ";
 		for (int i = 0; i < edge1Array.size(); i++) {
 			if (edge1Array[i] == node) {
 				std::cout << edge2Array[i] << " ";
@@ -166,12 +169,62 @@ public:
 		std::cout << std::endl;
 	}
 
+	// I'm going to try to create a function that checks how far apart 2 nodes are. It should return a number.
+	int checkDistance(T node1, T node2) {
+		int count = 0;
+		for (int i = 0; i < edge1Array.size(); i++) {
+			if (edge1Array[i] == node1 && edge2Array[i] == node2) {
+				count++;
+			}
+		}
+		return count;
+	}
+
+	std::vector<T> shortestPath(const T& src, const T& dst) {
+		// build index map and adj-list
+		std::unordered_map<T, int> idx;
+		for (int i = 0; i < nodeArray.size(); ++i) { idx[nodeArray[i]] = i; }
+		int N = nodeArray.size();
+
+		// creamos la lista de adjacencia. En este caso, hacemos una lista de listas, que captura que nodo tiene acceso a cual nodo. Muy versatil.
+		std::vector<std::vector<int>> adj(N);
+		for (int i = 0; i < edge1Array.size(); ++i) {
+			adj[idx[edge1Array[i]]].push_back(idx[edge2Array[i]]);
+		}
+
+		// este vector servirá tanto para ir por todo los nodos como para ir monitoreando el paso hacia el nodo objetivo.
+		std::vector<int> parent(N, -1);
+		std::queue<int> q;
+		int s = idx[src], t = idx[dst];
+		q.push(s);
+
+		while (!q.empty()) {
+			int u = q.front(); q.pop();
+			if (u == t) break;
+			for (int v : adj[u]) {
+				if (parent[v] == -1 && v != s) {
+					parent[v] = u;
+					q.push(v);
+				}
+			}
+		}
+
+		// reconstruct
+		std::vector<T> path;
+		if (parent[t] == -1 && s != t) return path; // no path
+		// nota: el foor loop ejecuta la cadena de código DESPUES de la primera iteración. Esto puede ser confuso la primera vez.
+		for (int cur = t; cur != -1; cur = parent[cur]) // muy inteligente. Vamos por cada nodo desde el punto final y vamos averiguando el camino.
+			path.push_back(nodeArray[cur]);
+		std::reverse(path.begin(), path.end());
+		return path;
+	}
+
 	void edgeExists(T node1, T node2) {
 		if (checkEdge(node1, node2) == 1) {
-			std::cout << "Edge exists between " << node1 << " and " << node2 << ".\n";
+			std::cout << "El vertice existen entre " << node1 << " y " << node2 << ".\n";
 		}
 		else {
-			std::cout << "No edge exists between " << node1 << " and " << node2 << ".\n";
+			std::cout << "No existe vertice entre " << node1 << " y " << node2 << ".\n";
 		}
 	}
 };
