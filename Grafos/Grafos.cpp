@@ -6,7 +6,7 @@ using namespace std;
 int main() {
 	Graph<std::string> firstGraph;
 	std::string a, b;
-	int input;
+	int input, totDistance;
 	vector<std::string> distance;
 
 	// Adding some initial nodes and edges
@@ -14,12 +14,14 @@ int main() {
 	firstGraph.addNode("Estadio2");
 	firstGraph.addNode("Estadio3");
 	firstGraph.addNode("Estadio4");
+	firstGraph.addNode("Estadio5");
 	// estadio1 -> estadio2 -> estadio3
 	// add vertices
 	firstGraph.addUnEdge("Estadio1", "Estadio2");
 	firstGraph.addUnEdge("Estadio2", "Estadio3");
 	firstGraph.addUnEdge("Estadio3", "Estadio1");
 	firstGraph.addUnEdge("Estadio3", "Estadio4");
+	firstGraph.addUnEdge("Estadio5", "Estadio3");
 
 	do {
 		std::cout << "Ingrese el número para realizar las siguientes operaciones:\n";
@@ -101,7 +103,8 @@ int main() {
 			std::cout << "Ingrese los nodos para verificar la distancia: ";
 			std::cin >> a >> b;
 			distance = firstGraph.shortestPath(a, b);
-			std::cout << "El borde entre " << a << " y " << b << " tiene una distancia de: " << distance.size() << std::endl;
+			totDistance = distance.size() == 1 ? 0 : distance.size() - 2;
+			std::cout << "El borde entre " << a << " y " << b << " tiene una distancia de: " << totDistance << std::endl;
 			break;
 		case 0:
 			break;
